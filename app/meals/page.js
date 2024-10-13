@@ -1,12 +1,17 @@
+import { Suspense } from 'react'
 import Link from 'next/link'
 
 import MealGrids from '@/components/Meals/MealGrids'
 import classes from './page.module.css'
 import { getMeals } from '@/lib/meals'
 
-export default async function MealsPage() {
+async function Meals() {
   const meals = await getMeals()
 
+  return <MealGrids meals={meals} />
+}
+
+export default function MealsPage() {
   return (
     <>
       <header className={classes.header}>
@@ -24,7 +29,11 @@ export default async function MealsPage() {
         </p>
       </header>
       <main className={classes.main}>
-        <MealGrids meals={meals} />
+        <Suspense
+          fallback={<p className={classes.loading}>Fetching meals...</p>}
+        >
+          <Meals />
+        </Suspense>
       </main>
     </>
   )
